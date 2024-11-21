@@ -1,13 +1,17 @@
 package com;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -26,8 +30,13 @@ public class Main extends JFrame {
     private JPanel orderInfoPanel; 
     // 메뉴 버튼을 저장할 리스트 (추 후에 "주문하기"와 "초기화" 버튼 클릭 시 해당 버튼 다시 활성화를 하기위해 리스트에 저장 함)
     private List<JButton> menuButtons = new ArrayList<>(); 
+    // 흰색
+    Color whiteColor = new Color(255, 255, 255); 
+    // 회색
+    Color grayColor = new Color(220, 220, 220);
+    // 어두운 회색
+    Color darkGrayColor = new Color(50, 50, 50);
     
-
     public Main() { 
         setTitle("봉카페");
         // JFrame 기본 레이아웃을 BorderLayout으로 설정하고 여백 줌
@@ -54,35 +63,70 @@ public class Main extends JFrame {
         
         // 메뉴 정보 배열 생성
         MenuInfo[] menuInfos = {
-            new MenuInfo("아메리카노[ICE]", 4000),
-            new MenuInfo("아메리카노[HOT]", 4000),
-            new MenuInfo("카페라떼[ICE]", 5000),
-            new MenuInfo("카페라떼[HOT]", 5000),
-            new MenuInfo("딸기라떼", 7500),
-            new MenuInfo("초코라떼", 7500),
-            new MenuInfo("초코케잌", 35000),
-            new MenuInfo("레드벨벳", 34000),
-            new MenuInfo("콜드브루", 7500),
-            new MenuInfo("물", 5000)
+            new MenuInfo("아메리카노[ICE]", 4000, "americano.jpg"),
+            new MenuInfo("아메리카노[HOT]", 4000, "HOTAmericano.jpg"),
+            new MenuInfo("카페라떼[ICE]", 5000, "cafeLatte.jpg"),
+            new MenuInfo("카페라떼[HOT]", 5000, "HOTCafeLatte.jpg"),
+            new MenuInfo("딸기라떼", 7500, "StrawberryLatte.jpg"),
+            new MenuInfo("초코라떼", 7500, "ChocolateLatte.jpg"),
+            new MenuInfo("레드벨벳", 10000, "cake1.jpg"),
+            new MenuInfo("초코케이크", 10000, "cake2.jpg"),
+            new MenuInfo("물", 6000, "water.png")
         };
 
         for (int i = 0; i < menuInfos.length; i++) { // 등록된 메뉴만큼 돌림
             final int index = i;  // 람다식을 사용하기 위해 i 값을 final로 처리
             // 각 메뉴버튼을 패널에 넣음(이렇게 패널에 넣어야 간격을 맞출 수 있음)
             JPanel menuPanel = new JPanel(); 
-            // 버튼 생성
-            JButton menuButton = new JButton("<html><center>" + menuInfos[i].getName() + "<br><br>" + String.format("%,d", menuInfos[i].getPrice()) + "원</center></html>");
+            //////////////////////////////////////////////
+            //////////// 버튼 이미지 넣기 시작 /////////////
+            //////////////////////////////////////////////
+            // 원본 이미지 로드
+            ImageIcon originalIcon = new ImageIcon(Main.class.getResource("/com/"+menuInfos[i].getImage()));
+            
+            // 이미지 크기 조정
+            Image originalImage = originalIcon.getImage();
+            Image resizedImage = originalImage.getScaledInstance(150, 150, Image.SCALE_SMOOTH); // 크기 변경
+            
+            // 크기 변경된 이미지를 새로운 ImageIcon으로 생성
+            ImageIcon resizedIcon = new ImageIcon(resizedImage);
+            
+            // 메뉴 버튼 생성 (이미지와 가격, 상품명을 함께 표시)
+            JButton menuButton = new JButton();
+            menuButton.setBackground(whiteColor);
+            menuButton.setLayout(new BoxLayout(menuButton, BoxLayout.Y_AXIS));  // 수직 레이아웃 설정
+            
+            // 이미지 부분 (상단에 이미지)
+            JLabel imageLabel = new JLabel(resizedIcon);
+            menuButton.add(imageLabel);  // 버튼에 이미지 추가
+            
+            // 간격 추가
+            menuButton.add(Box.createVerticalStrut(10));  // 이미지와 가격 사이에 10px 간격 추가
+            
+            // 하단 이름과 가격 부분임
+            JLabel priceLabel = new JLabel("<html><center>" + menuInfos[i].getName() + "<br><br>" 
+            	    + String.format("%,d", menuInfos[i].getPrice()) + "원</center></html>");
+            priceLabel.setHorizontalAlignment(SwingConstants.CENTER);  // 가로로 가운데 정렬
+            priceLabel.setVerticalAlignment(SwingConstants.CENTER);    // 세로로 가운데 정렬
+            
+            menuButton.add(priceLabel);  // 버튼에 가격 텍스트 추가
+            //////////////////////////////////////////////
+            //////////// 버튼 이미지 넣기 끝 /////////////
+            //////////////////////////////////////////////
+//            // 버튼 생성 (이거 안씀 추후에 지우기)
+//            JButton menuButton = new JButton("<html><center>" + menuInfos[i].getName() + "<br><br>" + String.format("%,d", menuInfos[i].getPrice()) + "원</center></html>");
 
-            // 텍스트를 버튼 안에서 수평, 수직으로 가운데 정렬
-            menuButton.setHorizontalAlignment(SwingConstants.CENTER);
-            menuButton.setVerticalAlignment(SwingConstants.CENTER);
-            menuButton.setPreferredSize(new Dimension(150, 200)); // 각 메뉴 버튼의 크기 고정
+            // 텍스트를 버튼 안에서 수평, 수직으로 가운데 정렬 (이거 안씀 추후에 지우기)
+//            menuButton.setHorizontalAlignment(SwingConstants.CENTER);
+//            menuButton.setVerticalAlignment(SwingConstants.CENTER);
+            menuButton.setPreferredSize(new Dimension(150, 220)); // 각 메뉴 버튼의 크기 고정
 
             // 버튼 리스너
             menuButton.addActionListener(e -> updateOrderInfo(menuInfos[index])); // 버튼 클릭 시 주문리스트 갱신하는 리스너
             menuButton.addActionListener(e -> {
             	JButton sourceButton= (JButton)e.getSource(); // 해당 버튼객체를 가져옴
             	sourceButton.setEnabled(false); // 해당 버튼 비활성화
+            	sourceButton.setBackground(grayColor); // 비활성화 색상변경
             });
             
             // 메뉴 버튼을 리스트에 저장
@@ -112,7 +156,7 @@ public class Main extends JFrame {
     void showEast() {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout(10, 10)); // 여백을 설정한 레이아웃
-        panel.setPreferredSize(new Dimension(320, 100)); // 오른쪽 패널 크기조정
+        panel.setPreferredSize(new Dimension(335, 100)); // 오른쪽 패널 크기조정
 
         // 주문 정보 영역 패널
         orderInfoPanel = new JPanel();
@@ -123,8 +167,11 @@ public class Main extends JFrame {
         // 하단에 주문하기 버튼이랑 총금액 정보 패널
         JPanel totalPrice_OrderBtnPanel = new JPanel(new GridLayout(3,0));
         JPanel totalPriceDescPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        totalPriceDescPanel.setBackground(grayColor); // 배경 흰색
         JPanel totalPricePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        totalPricePanel.setBackground(grayColor); // 배경 흰색
         JPanel oderBtnPanel = new JPanel();
+        oderBtnPanel.setBackground(grayColor);
         
         // 총 주문금액 설명란임
         totalPriceDescPanel.add(new JLabel("총 주문 금액"));
@@ -135,12 +182,18 @@ public class Main extends JFrame {
         
         // 주무하기 버튼
         JButton orderBtn = new JButton("주문하기");
+        // 주문하기 색상변경
+        orderBtn.setBackground(darkGrayColor); // 배경색 설정 (다크 그레이)
+        orderBtn.setForeground(new Color(240, 240, 240)); // 텍스트 색상 설정
         oderBtnPanel.add(orderBtn);
         // 주문하기 버튼 리스너
         orderBtn.addActionListener(e -> handleOrderButton());
         
-        // 초기화 버튼
-        JButton resetBtn = new JButton("초기화");
+        // 선택취소(초기화) 버튼
+        JButton resetBtn = new JButton("선택취소");
+        // 선택취소 버튼 색갈
+        resetBtn.setBackground(new Color(240, 240, 240));
+        resetBtn.setForeground(darkGrayColor); // (다크 그레이)
         oderBtnPanel.add(resetBtn);
         resetBtn.addActionListener(e -> resetMenuButtons());
         
@@ -172,23 +225,27 @@ public class Main extends JFrame {
             JPanel menuPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));  // 오른쪽 정렬
             
             int price = menu.getPrice(); // 해당 제품 가격 가져오기
-            int quantity = menu.getQuantity(); // 해당 메뉴 수량 가져오기
+            int quantity = menu.getQuantity(); // 해당 메뉴 수량 가져오기(초기 수량은 1임)
             
+            // 메뉴 이름 레이블
             JLabel menuNameLabel = new JLabel(menu.getName());
+            // 메뉴 가격 레이블
             JLabel menuPriceLabel = new JLabel(String.format("%,d", (price*quantity)) + "원");
             
             JButton minusBtn = new JButton("-");
+            minusBtn.setBackground(grayColor);
             JButton plusBtn = new JButton("+");
+            plusBtn.setBackground(grayColor);
             JTextField quantityField = new JTextField(Integer.toString(quantity), 2);
             
             // 수량 필드에서 금액 갱신
-           // quantityField.addActionListener(e -> updateTotalPrice());
-            quantityField.setEnabled(false);
+           // quantityField.addActionListener(e -> updateTotalPrice()); 이거 안씀 추후에 지우기
+            quantityField.setEditable(false); // 텍스트박스를 읽기전용으로 하는거임 (enable)은 흐려짐
             
             // + 버튼 리스너
             plusBtn.addActionListener(e -> {
-                menu.setQuantity(menu.getQuantity() + 1);
-                quantityField.setText(String.valueOf(menu.getQuantity()));
+                menu.setQuantity(menu.getQuantity() + 1); // 기존 수량 +1 해서 setter로 값 넣음
+                quantityField.setText(String.valueOf(menu.getQuantity())); // getter로 가져와서 형변환
                 menuPriceLabel.setText(String.format("%,d", menu.getPrice() * menu.getQuantity()) + "원");
                 updateTotalPrice(); // 총 금액 업데이트
             });
@@ -269,19 +326,17 @@ public class Main extends JFrame {
         // 메뉴 버튼들을 모두 활성화
         for (JButton button : menuButtons) {
             button.setEnabled(true);
+            button.setBackground(whiteColor);
         }
-        
         // 메뉴선택 수량 초기화하기
         for (MenuInfo menu : selectedMenus) {
         	menu.setQuantity(1);
         }
-        
         // 선택된 메뉴 리스트 초기화
         selectedMenus.clear(); // 메뉴 목록 초기화
-        refreshOrderInfoPanel(); // 오른쪽 패널 갱신
-        updateTotalPrice(); // 총 금액 초기화
+        refreshOrderInfoPanel(); // 오른쪽 패널 갱신 (리스트에 아무것도없는 상태 갱싱)
+        updateTotalPrice(); // 총 금액 초기화 (리스트에 아무것도 없으니 가격도 0원으로 나옴)
     }
-
 
     public static void main(String[] args) {
         new Main();

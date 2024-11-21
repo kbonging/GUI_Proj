@@ -8,11 +8,14 @@ public class MenuInfo {
 	private int price;
 	//수량
 	private int quantity;
+	// 이미지
+	private String image;
 	
-	public MenuInfo(String name, int price) {
+	public MenuInfo(String name, int price, String image) {
 		this.name = name;
 		this.price = price;
 		this.quantity = 1;
+		this.image=image;
 	}
 
 	public String getName() {
@@ -37,6 +40,14 @@ public class MenuInfo {
 
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}
 	
 	
