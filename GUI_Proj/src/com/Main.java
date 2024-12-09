@@ -236,7 +236,7 @@ public class Main extends JFrame {
             minusBtn.setBackground(grayColor);
             JButton plusBtn = new JButton("+");
             plusBtn.setBackground(grayColor);
-            JTextField quantityField = new JTextField(Integer.toString(quantity), 2);
+            JTextField quantityField = new JTextField(Integer.toString(quantity), 2);// 문자열로 번환
             
             // 수량 필드에서 금액 갱신
            // quantityField.addActionListener(e -> updateTotalPrice()); 이거 안씀 추후에 지우기
@@ -270,6 +270,7 @@ public class Main extends JFrame {
         }
 
         updateTotalPrice(); // 총 금액 레이블 갱신
+        // 레이아웃을 변경하거나 추가/삭제된 컴포넌트를 반영하고자 할 때, 이 두 메서드를 호출하여 GUI를 갱신합니다.
         orderInfoPanel.revalidate();
         orderInfoPanel.repaint();
     }
